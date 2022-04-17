@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Shared Prefernces Practise</string>
+    <string name="hafta_kuni">Hafta kuni: </string>
+    <string name="note_title">Reja sarlavhasi</string>
+    <string name="note_description">Reja</string>
+    <string name="priority_1">1</string>
+    <string name="priority_2">2</string>
+    <string name="priority_3">3</string>
+    <string name="rejani_saqlash">Rejani saqlash</string>
+
+    <string-array name="days_of_week">
+        <item>Dushanba</item>
+        <item>Seshanba</item>
+        <item>Chorshanba</item>
+        <item>Payshanba</item>
+        <item>Juma</item>
+        <item>Shanba</item>
+        <item>Yakshanba</item>
+    </string-array>
+</resources>
