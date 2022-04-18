@@ -22,17 +22,11 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView todoList;
     private final ArrayList<Note_item> noteItems = new ArrayList<>();
     private Note_adapter adapter;
-    private NotesDataBaseHelper dataBaseHelper;
-    private SQLiteDatabase sqLiteOpenHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        dataBaseHelper = new NotesDataBaseHelper(this);
-        sqLiteOpenHelper = dataBaseHelper.getWritableDatabase();
-        getData();
         todoList = findViewById(R.id.recycler_view_notes);
         adapter = new Note_adapter(noteItems);
         todoList.setAdapter(adapter);
@@ -66,33 +60,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void removeElement(int position) {
         int id = noteItems.get(position).getId();
-        String where = NotesContract.NotesEntry._ID + " = ?";
-        String[] whereArgs = new String[]{Integer.toString(id)};
-        sqLiteOpenHelper.delete(NotesContract.NotesEntry.TABLE_NAME, where, whereArgs);
-        getData();
         adapter.notifyDataSetChanged();
     }
 
     public void onClickCreateNote(View view) {
         Intent intentCreateNewNote = new Intent(this, CreateNoteActivity.class);
         startActivity(intentCreateNewNote);
-    }
-
-    private void getData() {
-        noteItems.clear();
-        String selection = NotesContract.NotesEntry.COLUMN_PRIORITY + " < ?";
-        String[] selectionArgs = new String[] {"4"};
-        Cursor cursor = sqLiteOpenHelper.query(NotesContract.NotesEntry.TABLE_NAME, null, selection, selectionArgs, null, null, NotesContract.NotesEntry.COLUMN_DAY_OF_WEEK);
-        while (cursor.moveToNext()) {
-            String title = cursor.getString(cursor.getColumnIndexOrThrow(NotesContract.NotesEntry.COLUMN_TITLE));
-            String description = cursor.getString(cursor.getColumnIndexOrThrow(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
-            int dayOfWeek = cursor.getInt(cursor.getColumnIndexOrThrow(NotesContract.NotesEntry.COLUMN_DAY_OF_WEEK));
-            int priority = cursor.getInt(cursor.getColumnIndexOrThrow(NotesContract.NotesEntry.COLUMN_PRIORITY));
-            int id = cursor.getInt(cursor.getColumnIndexOrThrow(NotesContract.NotesEntry._ID));
-            Note_item noteItem = new Note_item(id, title, description, dayOfWeek, priority);
-            noteItems.add(noteItem);
-        }
-        cursor.close();
-
     }
 }

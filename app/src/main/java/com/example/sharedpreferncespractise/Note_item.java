@@ -1,5 +1,6 @@
 package com.example.sharedpreferncespractise;
 
+
 public class Note_item {
 
     private String noteTitle;

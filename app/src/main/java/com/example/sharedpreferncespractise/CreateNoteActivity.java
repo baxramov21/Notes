@@ -20,9 +20,6 @@ public class CreateNoteActivity extends AppCompatActivity {
     private Spinner spinnerDaysOfWeek;
 
     private int priority = 1;
-    private NotesDataBaseHelper dataBaseHelper;
-    private SQLiteDatabase sqLiteDatabase;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +28,6 @@ public class CreateNoteActivity extends AppCompatActivity {
         editTextNoteTitle = findViewById(R.id.editNoteTitle);
         editTextNoteDescription = findViewById(R.id.editNoteDescription);
         spinnerDaysOfWeek = findViewById(R.id.spinnerDaysOfWeek);
-        dataBaseHelper = new NotesDataBaseHelper(this);
-        sqLiteDatabase = dataBaseHelper.getWritableDatabase();
     }
 
     public void onClickSaveNote(View view) {
@@ -47,7 +42,6 @@ public class CreateNoteActivity extends AppCompatActivity {
             contentValues.put(NotesContract.NotesEntry.COLUMN_DESCRIPTION,noteDescription);
             contentValues.put(NotesContract.NotesEntry.COLUMN_TITLE,noteTitle);
             contentValues.put(NotesContract.NotesEntry.COLUMN_PRIORITY,priority);
-            sqLiteDatabase.insert(NotesContract.NotesEntry.TABLE_NAME,null,contentValues);
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
