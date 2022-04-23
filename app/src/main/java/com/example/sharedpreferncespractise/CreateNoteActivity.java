@@ -1,17 +1,15 @@
 package com.example.sharedpreferncespractise;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 public class CreateNoteActivity extends AppCompatActivity {
 
@@ -20,6 +18,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     private Spinner spinnerDaysOfWeek;
 
     private int priority = 1;
+    private MainViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +27,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         editTextNoteTitle = findViewById(R.id.editNoteTitle);
         editTextNoteDescription = findViewById(R.id.editNoteDescription);
         spinnerDaysOfWeek = findViewById(R.id.spinnerDaysOfWeek);
+
+        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
     }
 
     public void onClickSaveNote(View view) {
@@ -35,14 +36,11 @@ public class CreateNoteActivity extends AppCompatActivity {
         String noteTitle = editTextNoteTitle.getText().toString();
         String noteDescription = editTextNoteDescription.getText().toString();
         if (noteTitle.isEmpty() || noteDescription.isEmpty()) {
-            Toast.makeText(this, "Iltimos maydonlarni toldiring", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.pls_write_everything, Toast.LENGTH_SHORT).show();
         } else {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(NotesContract.NotesEntry.COLUMN_DAY_OF_WEEK,dayOfWeek);
-            contentValues.put(NotesContract.NotesEntry.COLUMN_DESCRIPTION,noteDescription);
-            contentValues.put(NotesContract.NotesEntry.COLUMN_TITLE,noteTitle);
-            contentValues.put(NotesContract.NotesEntry.COLUMN_PRIORITY,priority);
-            Intent intent = new Intent(this, MainActivity.class);
+            Note_item noteItem = new Note_item(noteTitle,noteDescription,dayOfWeek,priority);
+            viewModel.insertNote(noteItem);
+            Intent intent = new Intent(this,MainActivity.class);
             startActivity(intent);
         }
     }

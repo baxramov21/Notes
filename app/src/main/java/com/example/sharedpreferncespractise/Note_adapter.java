@@ -9,16 +9,25 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Note_adapter extends RecyclerView.Adapter<Note_adapter.NotesViewHolder> {
 
-    private ArrayList<Note_item> noteItemArrayList;
+    private List<Note_item> noteItemArrayList;
 
     private OnNoteClickListener onNoteClickListener;
 
     interface OnNoteClickListener {
         void onClick(int position);
         void onLongClick(int position);
+    }
+
+    public List<Note_item> getNoteItemArrayList() {
+        return noteItemArrayList;
+    }
+
+    public void setNoteItemArrayList(List<Note_item> noteItemArrayList) {
+        this.noteItemArrayList = noteItemArrayList;
     }
 
     public void setOnNoteClickListener(OnNoteClickListener onNoteClickListener) {
@@ -41,7 +50,7 @@ public class Note_adapter extends RecyclerView.Adapter<Note_adapter.NotesViewHol
     public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
         Note_item note_item = noteItemArrayList.get(position);
         holder.noteTitle.setText(note_item.getNoteTitle());
-        holder.dayOfWeek.setText(Note_item.getDayAsInteger(note_item.getDayOfWeek()));
+        holder.dayOfWeek.setText(Note_item.getDayAsInteger(note_item.getDayOfWeek() + 1));
         holder.noteDescription.setText(note_item.getNoteDescription());
         int colorId;
         int priority = note_item.getPriority();

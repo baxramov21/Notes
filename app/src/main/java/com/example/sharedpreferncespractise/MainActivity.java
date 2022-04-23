@@ -1,21 +1,21 @@
 package com.example.sharedpreferncespractise;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,11 +23,15 @@ public class MainActivity extends AppCompatActivity {
     private final ArrayList<Note_item> noteItems = new ArrayList<>();
     private Note_adapter adapter;
 
+    private MainViewModel viewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         todoList = findViewById(R.id.recycler_view_notes);
+        getData();
         adapter = new Note_adapter(noteItems);
         todoList.setAdapter(adapter);
         todoList.setLayoutManager(new LinearLayoutManager(this));
@@ -59,12 +63,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void removeElement(int position) {
-        int id = noteItems.get(position).getId();
-        adapter.notifyDataSetChanged();
+        Note_item note_item = adapter.getNoteItemArrayList().get(position);
+        viewModel.deleteNote(note_item);
     }
 
     public void onClickCreateNote(View view) {
         Intent intentCreateNewNote = new Intent(this, CreateNoteActivity.class);
         startActivity(intentCreateNewNote);
+    }
+
+    private void getData() {
+        LiveData<List<Note_item>> noteItemsFromDatabase = viewModel.getLiveData();
+        noteItemsFromDatabase.observe(this, new Observer<List<Note_item>>() {
+                    @Override
+                    public void onChanged(List<Note_item> noteItemsFromLiveData) {
+                       adapter.setNoteItemArrayList(noteItemsFromLiveData);
+                    }
+                });
     }
 }
